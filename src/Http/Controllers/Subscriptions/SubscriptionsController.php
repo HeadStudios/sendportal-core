@@ -54,6 +54,11 @@ class SubscriptionsController extends Controller
 
         if ($unsubscribed) {
             $message->unsubscribed_at = now();
+            $email = $subscriber->email;
+            
+            $response = Http::get("https://dev1.rrdevours.monster/api/contacts/eunsubscribe/{$email}", [
+                'key' => env('QUERY_KEY')
+            ]);
             $message->save();
 
             $subscriber->unsubscribed_at = now();

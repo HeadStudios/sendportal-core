@@ -9,8 +9,7 @@
 @section('content')
 
     @component('sendportal::layouts.partials.card')
-        @slot('cardHeader', __('Create Subscriber'))
-
+        @slot('cardHeader', __('asdasdfasdf Subscriber'))
         @slot('cardBody')
             <form action="{{ route('sendportal.subscribers.store') }}" class="form-horizontal" method="POST">
                 @csrf

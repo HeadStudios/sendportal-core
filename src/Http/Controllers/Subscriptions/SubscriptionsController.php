@@ -11,6 +11,8 @@ use Sendportal\Base\Http\Requests\SubscriptionToggleRequest;
 use Sendportal\Base\Models\Message;
 use Sendportal\Base\Models\UnsubscribeEventType;
 use Sendportal\Base\Repositories\Messages\MessageTenantRepositoryInterface;
+use Illuminate\Support\Facades\Http;
+
 
 class SubscriptionsController extends Controller
 {
@@ -56,7 +58,7 @@ class SubscriptionsController extends Controller
             $message->unsubscribed_at = now();
             $email = $subscriber->email;
             
-            $response = Http::get("https://dev1.rrdevours.monster/api/contacts/eunsubscribe/{$email}", [
+            $response = Http::get("https://rrdevours.monster/api/contacts/eunsubscribe/{$email}", [
                 'key' => env('QUERY_KEY')
             ]);
             $message->save();

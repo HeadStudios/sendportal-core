@@ -73,11 +73,12 @@ class CreateMessages
      */
     protected function handleTag(Campaign $campaign, Tag $tag): void
     {
-        \Log::info('- Handling Campaign Tag id='.$tag->id);
+        
 
         $tag->subscribers()->whereNull('unsubscribed_at')->chunkById(1000, function ($subscribers) use ($campaign) {
             $this->dispatchToSubscriber($campaign, $subscribers);
-        }, 'sendportal_subscribers.id');
+        }, 'contacts.id');
+
     }
 
     /**
@@ -88,10 +89,13 @@ class CreateMessages
      */
     protected function dispatchToSubscriber(Campaign $campaign, $subscribers)
     {
-        \Log::info('- Number of subscribers in this chunk: ' . count($subscribers));
+        dump('- Number of subscribers in this chunk: ' . count($subscribers));
 
         foreach ($subscribers as $subscriber) {
+            dump("Rolling through: ");
+            dump($subscriber);
             if (! $this->canSendToSubscriber($campaign->id, $subscriber->id)) {
+                dump("This one above is OUT");
                 continue;
             }
 
@@ -162,6 +166,10 @@ class CreateMessages
         // it has already been dispatched. This makes the dispatch fault-tolerant
         // and prevent dispatching the same message to the same subscriber
         // more than once
+
+        dump("Trying to dispatch we getting the following subscriber: ");
+        dump($subscriber->email);
+
         if ($message = $this->findMessage($campaign, $subscriber)) {
             \Log::info('Message has previously been created campaign=' . $campaign->id . ' subscriber=' . $subscriber->id);
 

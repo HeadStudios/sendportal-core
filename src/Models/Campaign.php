@@ -169,7 +169,7 @@ class Campaign extends BaseModel
             ->whereNull('unsubscribed_at')
             ->when(!$this->send_to_all, function (Builder $query) {
                 $query->whereHas('tags', function (Builder $subQuery) {
-                    $subQuery->whereIn('sendportal_tags.id', $this->tags->pluck('id'));
+                    $subQuery->whereIn('contact_lists.id', $this->tags->pluck('id'));
                 });
             })
             ->count();

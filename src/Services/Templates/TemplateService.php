@@ -27,6 +27,7 @@ class TemplateService
      */
     public function store(int $workspaceId, array $data): Template
     {
+
         $data['content'] = $this->normalizeTags($data['content'], 'content');
 
         return $this->templates->store($workspaceId, $data);

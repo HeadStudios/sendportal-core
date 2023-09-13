@@ -15,7 +15,7 @@ class CreateSubscribersTable extends UpgradeMigration
     {
         $unsubscribe_event_types = $this->getTableName('unsubscribe_event_types');
 
-        Schema::create('sendportal_subscribers', function (Blueprint $table) use ($unsubscribe_event_types) {
+        Schema::create('contacts', function (Blueprint $table) use ($unsubscribe_event_types) {
             $table->increments('id');
             $table->unsignedInteger('workspace_id')->index();
             $table->uuid('hash')->unique();

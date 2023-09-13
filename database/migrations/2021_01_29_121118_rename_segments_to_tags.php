@@ -13,7 +13,7 @@ class RenameSegmentsToTags extends Migration
      */
     public function up()
     {
-        Schema::rename('sendportal_segments', 'sendportal_tags');
+        Schema::rename('sendportal_segments', 'contact_lists');
 
         Schema::table('sendportal_segment_subscriber', function (Blueprint $table) {
             $foreignKeys = $this->listTableForeignKeys('sendportal_segment_subscriber');
@@ -26,7 +26,7 @@ class RenameSegmentsToTags extends Migration
 
             $table->renameColumn('segment_id', 'tag_id');
 
-            $table->foreign('tag_id')->references('id')->on('sendportal_tags');
+            $table->foreign('tag_id')->references('id')->on('contact_lists');
         });
 
         Schema::rename("sendportal_segment_subscriber", "sendportal_tag_subscriber");
@@ -43,7 +43,7 @@ class RenameSegmentsToTags extends Migration
 
             $table->renameColumn('segment_id', 'tag_id');
 
-            $table->foreign('tag_id')->references('id')->on('sendportal_tags');
+            $table->foreign('tag_id')->references('id')->on('contact_lists');
         });
 
         Schema::rename("sendportal_campaign_segment", "sendportal_campaign_tag");

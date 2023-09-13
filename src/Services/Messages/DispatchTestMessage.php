@@ -113,7 +113,7 @@ class DispatchTestMessage
 
         $messageId = $this->relayMessage->handle($mergedContent, $messageOptions, $emailService);
 
-        Log::info('Message has been dispatched.', ['message_id' => $messageId]);
+        Log::info('Message has been dispatched IT is just a test please listen to me.', ['message_id' => $messageId]);
 
         return $messageId;
     }

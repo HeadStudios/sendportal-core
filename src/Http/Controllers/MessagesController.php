@@ -41,7 +41,7 @@ class MessagesController extends Controller
     }
 
     /**
-     * Show all sent messages.
+     * Show all sent messages. 
      *
      * @throws Exception
      */
@@ -157,6 +157,8 @@ class MessagesController extends Controller
      */
     public function sendSelected(): RedirectResponse
     {
+
+        
         if (! request()->has('messages')) {
             return redirect()->back()->withErrors(__('No messages selected'));
         }

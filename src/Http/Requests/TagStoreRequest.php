@@ -16,7 +16,7 @@ class TagStoreRequest extends FormRequest
             'name' => [
                 'required',
                 'max:255',
-                Rule::unique('sendportal_tags')
+                Rule::unique('contact_lists')
                     ->where('workspace_id', Sendportal::currentWorkspaceId()),
             ],
         ];

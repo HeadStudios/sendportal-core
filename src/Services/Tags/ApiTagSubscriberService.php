@@ -29,7 +29,7 @@ class ApiTagSubscriberService
         $tag = $this->tags->find($workspaceId, $tagId);
 
         /** @var Collection $existingSubscribers */
-        $existingSubscribers = $tag->subscribers()->pluck('sendportal_subscribers.id')->toBase();
+        $existingSubscribers = $tag->subscribers()->pluck('contacts.id')->toBase();
 
         $subscribersToStore = $subscriberIds->diff($existingSubscribers);
 

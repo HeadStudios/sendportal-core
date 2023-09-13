@@ -11,6 +11,8 @@ use Sendportal\Base\Repositories\Campaigns\CampaignTenantRepositoryInterface;
 use Sendportal\Base\Traits\NormalizeTags;
 use Sendportal\Pro\Repositories\AutomationScheduleRepository;
 use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
+use Illuminate\Support\Facades\Log;
+
 
 class MergeContentService
 {
@@ -35,6 +37,7 @@ class MergeContentService
      */
     public function handle(Message $message): string
     {
+        Log::info('Handling message', ['message' => $message->toArray()]);
         return $this->inlineStyles($this->resolveContent($message));
     }
 
@@ -43,6 +46,7 @@ class MergeContentService
      */
     protected function resolveContent(Message $message): string
     {
+        
         if ($message->isCampaign()) {
             $mergedContent = $this->mergeCampaignContent($message);
         } elseif ($message->isAutomation()) {
@@ -61,6 +65,8 @@ class MergeContentService
     {
         /** @var Campaign $campaign */
         $campaign = $this->campaignRepo->find($message->workspace_id, $message->source_id, ['template']);
+
+        
 
         if (!$campaign) {
             throw new Exception('Unable to resolve campaign step for message id= ' . $message->id);
@@ -98,46 +104,66 @@ class MergeContentService
 
     protected function mergeTags(string $content, Message $message): string
     {
+
+        Log::info('Content before merging tags', ['content' => $content]);
+
         $content = $this->compileTags($content);
 
         $content = $this->mergeSubscriberTags($content, $message);
         $content = $this->mergeUnsubscribeLink($content, $message);
         $content = $this->mergeWebviewLink($content, $message);
 
+        Log::info('Content after merging tags', ['content' => $content]);
+
         return $content;
     }
 
     protected function compileTags(string $content): string
     {
-        $tags = [
-            'email',
-            'first_name',
-            'last_name',
-            'unsubscribe_url',
-            'webview_url'
-        ];
+    $tags = [
+        'email',
+        'first_name',
+        'last_name',
+        'unsubscribe_url',
+        'webview_url',
+        'mobile',
+        'full_name'  // Add this line
+    ];
 
-        foreach ($tags as $tag) {
-            $content = $this->normalizeTags($content, $tag);
-        }
+    foreach ($tags as $tag) {
+        $content = $this->normalizeTags($content, $tag);
+    }
 
-        return $content;
+    return $content;
     }
 
     protected function mergeSubscriberTags(string $content, Message $message): string
-    {
-        $tags = [
-            'email' => $message->recipient_email,
-            'first_name' => optional($message->subscriber)->first_name ?? '',
-            'last_name' => optional($message->subscriber)->last_name ?? ''
-        ];
+{
+    $subscriber = $message->subscriber;
 
-        foreach ($tags as $key => $replace) {
-            $content = str_ireplace('{{' . $key . '}}', $replace, $content);
-        }
-
-        return $content;
+    // Determine the mobile value
+    $mobile = '';
+    if ($subscriber && $subscriber->country_code && $subscriber->mobile) {
+        $mobile = '+' . $subscriber->country_code . $subscriber->mobile;
     }
+
+    // Determine the full_name value and replace spaces with '+'
+    $full_name = $subscriber ? str_replace(' ', '+', $subscriber->name) : '';
+
+    $tags = [
+        'email' => $message->recipient_email,
+        'first_name' => optional($subscriber)->first_name ?? '',
+        'last_name' => optional($subscriber)->last_name ?? '',
+        'mobile' => $mobile,  // Use the determined mobile value
+        'full_name' => $full_name  // Use the determined full_name value
+    ];
+
+    foreach ($tags as $key => $replace) {
+        $content = str_ireplace('{{' . $key . '}}', $replace, $content);
+    }
+
+    return $content;
+}
 
     protected function mergeUnsubscribeLink(string $content, Message $message): string
     {

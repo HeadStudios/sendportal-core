@@ -94,7 +94,7 @@ class WebRoutes
                     $messageRouter->get('/', 'MessagesController@index')->name('index');
                     $messageRouter->get('draft', 'MessagesController@draft')->name('draft');
                     $messageRouter->get('{id}/show', 'MessagesController@show')->name('show');
-                    $messageRouter->post('send', 'MessagesController@send')->name('send');
+                    $messageRouter->post('send', 'MessagesController@send')->name('send')->withoutMiddleware(['auth']);
                     $messageRouter->delete('{id}/delete', 'MessagesController@delete')->name('delete');
                     $messageRouter->post('send-selected', 'MessagesController@sendSelected')->name('send-selected');
                 });

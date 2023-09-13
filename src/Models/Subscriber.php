@@ -44,7 +44,7 @@ class Subscriber extends BaseModel
     }
 
     /** @var string */
-    protected $table = 'sendportal_subscribers';
+    protected $table = 'contacts';
 
     /** @var string[] */
     protected $fillable = [

@@ -9,6 +9,9 @@ use Database\Factories\TagFactory;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use App\Models\Contact;
+use Sendportal\Base\Models\Subscriber;
+
 
 /**
  * @property int $id
@@ -35,7 +38,7 @@ class Tag extends BaseModel
     }
 
     /** @var string */
-    protected $table = 'sendportal_tags';
+    protected $table = 'contact_lists';
 
     /** @var array */
     protected $fillable = [
@@ -57,7 +60,7 @@ class Tag extends BaseModel
      */
     public function subscribers(): BelongsToMany
     {
-        return $this->belongsToMany(Subscriber::class, 'sendportal_tag_subscriber')->withTimestamps();
+        return $this->belongsToMany(Subscriber::class, 'sendportal_tag_subscriber', 'tag_id', 'subscriber_id')->withTimestamps();
     }
 
     /**

@@ -37,6 +37,7 @@ class DispatchMessage
         RelayMessage $relayMessage,
         MarkAsSent $markAsSent
     ) {
+        
         $this->mergeContentService = $mergeContentService;
         $this->mergeSubjectService = $mergeSubjectService;
         $this->resolveEmailService = $resolveEmailService;
@@ -49,6 +50,11 @@ class DispatchMessage
      */
     public function handle(Message $message): ?string
     {
+
+        
+
+        
+
         if (!$this->isValidMessage($message)) {
             Log::info('Message is not valid, skipping id=' . $message->id);
 
@@ -96,6 +102,7 @@ class DispatchMessage
      */
     protected function dispatch(Message $message, EmailService $emailService, MessageTrackingOptions $trackingOptions, string $mergedContent): ?string
     {
+
         $messageOptions = (new MessageOptions)
             ->setTo($message->recipient_email)
             ->setFromEmail($message->from_email)
@@ -105,7 +112,7 @@ class DispatchMessage
 
         $messageId = $this->relayMessage->handle($mergedContent, $messageOptions, $emailService);
 
-        Log::info('Message has been dispatched.', ['message_id' => $messageId]);
+        Log::info('Message has been dispatched. This is the real deal is anyone listening?', ['message_id' => $messageId, 'merged_content' => $mergedContent]);
 
         return $messageId;
     }

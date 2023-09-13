@@ -169,7 +169,7 @@ class EmailWebhookService
             return;
         }
 
-        DB::table('sendportal_subscribers')->where('id', $subscriberId)->update([
+        DB::table('contacts')->where('id', $subscriberId)->update([
             'unsubscribed_at' => now(),
             'unsubscribe_event_id' => $typeId,
             'updated_at' => now()
